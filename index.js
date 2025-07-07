@@ -42,7 +42,7 @@ const users = [];
 app.post('/register', async (req, res) => {
   const hashed = await bcrypt.hash(req.body.password, 10);
   users.push({ username: req.body.username, password: hashed });
-  res.status(201).send();
+  res.status(201).json({"message": "User registered successfully"});
 });
 
 app.post('/login', async (req, res) => {
