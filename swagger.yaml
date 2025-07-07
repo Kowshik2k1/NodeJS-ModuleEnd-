@@ -1,0 +1,168 @@
+openapi: 3.0.0
+info:
+  title: Items API
+  description: A Simple CRUD API to Create, Update, Store and Delete the books and its description
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/
+    variables:
+      port:
+        default: '8080'
+paths:
+  /items:
+    get:
+      summary: "Retrieve all items"
+      responses:
+        '200':
+          description: "A list of items"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+    post:
+      summary: "Create a new item"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: "Item created successfully"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+  /items/{id}:
+    get:
+      summary: "Retrieve a specific item by ID"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: "ID of the item to retrieve"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "The item was found"
+        '404':
+          description: "Item not found"
+    put:
+      summary: "Update an existing item"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: "ID of the item to update"
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: "Item updated successfully"
+        '404':
+          description: "Item not found"
+    delete:
+      summary: "Delete an item by ID"
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: "ID of the item to delete"
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: "Item deleted successfully"
+        '404':
+          description: "Item not found"
+  /register:
+    post:
+      summary: "Register a new user"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: "User registered successfully"
+  /login:
+    post:
+      summary: "Login and get JWT token"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: "JWT token generated"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+  /protected:
+    get:
+      summary: "Access a protected route"
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: "Protected route accessed"
+        '401':
+          description: "Unauthorized access"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
